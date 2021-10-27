@@ -12,7 +12,13 @@ func IndexPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl, err := template.ParseFiles("./public/pages/index.tmpl")
+	templateFiles := []string{
+		"./public/pages/index.tmpl",
+		"./public/pages/layouts/base.tmpl",
+		"./public/pages/layouts/footer.tmpl",
+	}
+
+	tmpl, err := template.ParseFiles(templateFiles...)
 
 	if err != nil {
 		log.Println(err.Error())
