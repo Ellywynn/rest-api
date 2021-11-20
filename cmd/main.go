@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	restapi "github.com/ellywynn/rest-api"
@@ -11,16 +10,19 @@ import (
 	"github.com/ellywynn/rest-api/pkg/service"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
 func main() {
+	logrus.SetFormatter(new(logrus.JSONFormatter))
+
 	if err := initConfig(); err != nil {
-		log.Fatalf("An error occurred while initializing config: %s\n", err.Error())
+		logrus.Fatalf("An error occurred while initializing config: %s\n", err.Error())
 	}
 
 	if err := godotenv.Load(); err != nil {
-		log.Fatalf("Can't load .env file: %s\n", err.Error())
+		logrus.Fatalf("Can't load .env file: %s\n", err.Error())
 	}
 
 	db, err := repository.NewPostgres(&repository.Config{
@@ -33,7 +35,7 @@ func main() {
 	})
 
 	if err != nil {
-		log.Fatalf("An error occurred while connection to database: %s\n", err.Error())
+		logrus.Fatalf("An error occurred while connection to database: %s\n", err.Error())
 	}
 
 	repos := repository.NewRepository(db)
@@ -44,7 +46,7 @@ func main() {
 
 	s := new(restapi.Server)
 	if err := s.Run(port, handlers.InitRoutes()); err != nil {
-		log.Fatalf("An error occurred while running the server: %s\n", err)
+		logrus.Fatalf("An error occurred while running the server: %s\n", err)
 	}
 
 	fmt.Println("Server running on port " + port)
