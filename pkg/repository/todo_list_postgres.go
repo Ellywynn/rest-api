@@ -51,3 +51,15 @@ func (t *TodoListPostgres) GetAllLists(userId int) ([]models.TodoList, error) {
 
 	return lists, err
 }
+
+func (t *TodoListPostgres) GetById(userId, id int) (models.TodoList, error) {
+	var list models.TodoList
+
+	query := fmt.Sprintf("SELECT l.id, l.title, l.description FROM %s AS l "+
+		"INNER JOIN %s AS ul ON l.id = ul.list_id WHERE ul.user_id = $1 AND ul.list_id = $2",
+		todoListsTable, usersListsTable)
+
+	err := t.db.Get(&list, query, userId, id)
+
+	return list, err
+}
