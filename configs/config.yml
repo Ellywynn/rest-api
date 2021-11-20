@@ -1,5 +1,7 @@
+# Application port
 port: "3000"
 
+# Database config
 db:
   username: "postgres"
   port: "5436"
