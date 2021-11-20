@@ -1,5 +1,7 @@
 package repository
 
+import "github.com/jmoiron/sqlx"
+
 type Authorization interface{}
 
 type TodoList interface{}
@@ -12,6 +14,6 @@ type Repository struct {
 	TodoList
 }
 
-func NewRepository() *Repository {
+func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{}
 }

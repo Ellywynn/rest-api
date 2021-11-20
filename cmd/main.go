@@ -3,27 +3,47 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	restapi "github.com/ellywynn/rest-api"
 	"github.com/ellywynn/rest-api/pkg/handler"
 	"github.com/ellywynn/rest-api/pkg/repository"
 	"github.com/ellywynn/rest-api/pkg/service"
+	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
 )
 
-const port = "3000"
-
 func main() {
 	if err := initConfig(); err != nil {
-		log.Fatalf("An erroc occurred while initializing config: %s\n", err.Error())
+		log.Fatalf("An error occurred while initializing config: %s\n", err.Error())
 	}
 
-	repos := repository.NewRepository()
+	if err := godotenv.Load(); err != nil {
+		log.Fatalf("Can't load .env file: %s\n", err.Error())
+	}
+
+	db, err := repository.NewPostgres(&repository.Config{
+		Host:     viper.GetString("db.host"),
+		Port:     viper.GetString("db.port"),
+		DBUser:   viper.GetString("db.username"),
+		DBName:   viper.GetString("db.dbname"),
+		Password: os.Getenv("DB_PASSWORD"),
+		SSLMode:  viper.GetString("db.sslmode"),
+	})
+
+	if err != nil {
+		log.Fatalf("An error occurred while connection to database: %s\n", err.Error())
+	}
+
+	repos := repository.NewRepository(db)
 	services := service.NewService(repos)
 	handlers := handler.NewHandler(services)
 
+	port := viper.GetString("port")
+
 	s := new(restapi.Server)
-	if err := s.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
+	if err := s.Run(port, handlers.InitRoutes()); err != nil {
 		log.Fatalf("An error occurred while running the server: %s\n", err)
 	}
 
