@@ -19,7 +19,9 @@ type TodoList interface {
 	Update(userId int, id int, input models.UpdateListInput) error
 }
 
-type TodoItem interface{}
+type TodoItem interface {
+	Create(userId int, listId int, item models.TodoItem) (int, error)
+}
 
 type Service struct {
 	Authorization
