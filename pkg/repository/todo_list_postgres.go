@@ -45,7 +45,7 @@ func (t *TodoListPostgres) Create(userId int, list models.TodoList) (int, error)
 func (t *TodoListPostgres) GetAllLists(userId int) ([]models.TodoList, error) {
 	var lists []models.TodoList
 
-	query := fmt.Sprintf("SELECT l.id, l.title, l.description FROM %s AS l INNER JOIN %s AS ul ON l.id = ul.list_id WHERE ul.user_id = $1",
+	query := fmt.Sprintf("SELECT l.* FROM %s AS l INNER JOIN %s AS ul ON l.id = ul.list_id WHERE ul.user_id = $1",
 		todoListsTable, usersListsTable)
 
 	err := t.db.Select(&lists, query, userId)
