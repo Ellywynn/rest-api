@@ -36,3 +36,7 @@ func (t *TodoItemService) GetAllItems(userId, listId int) ([]models.TodoItem, er
 
 	return t.repo.GetAllItems(userId, listId)
 }
+
+func (t *TodoItemService) GetById(userId, itemId int) (models.TodoItem, error) {
+	return t.repo.GetById(userId, itemId)
+}
