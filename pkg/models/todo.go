@@ -33,8 +33,22 @@ type UpdateListInput struct {
 }
 
 func (i UpdateListInput) Validate() error {
-	if (i.Title == nil) && i.Description == nil {
+	if i.Title == nil && i.Description == nil {
 		return errors.New("title and description cannot be empty")
+	}
+
+	return nil
+}
+
+type UpdateItemInput struct {
+	Title       *string `json:"title"`
+	Description *string `json:"description"`
+	Done        *string `json:"done"`
+}
+
+func (i UpdateItemInput) Validate() error {
+	if i.Title == nil && i.Description == nil && i.Done == nil {
+		return errors.New("title, description and done cannot be empty")
 	}
 
 	return nil

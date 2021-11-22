@@ -40,3 +40,11 @@ func (t *TodoItemService) GetAllItems(userId, listId int) ([]models.TodoItem, er
 func (t *TodoItemService) GetById(userId, itemId int) (models.TodoItem, error) {
 	return t.repo.GetById(userId, itemId)
 }
+
+func (t *TodoItemService) Delete(userId, itemId int) error {
+	return t.repo.Delete(userId, itemId)
+}
+
+func (t *TodoItemService) Update(userId int, id int, input models.UpdateItemInput) error {
+	return t.repo.Update(userId, id, input)
+}
